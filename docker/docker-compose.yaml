@@ -2,12 +2,13 @@ version: '3'
 services:
   postgres:
     image: postgres:12.3
+    env_file: .env
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=1q2w3e4r
-      - POSTGRES_DB=app.db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
