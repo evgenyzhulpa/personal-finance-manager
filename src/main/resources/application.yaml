@@ -3,11 +3,12 @@ spring:
     name: personal-finance-manager
 
   jpa:
+    open-in-view: false
     generate-ddl: true
     hibernate:
     ddl-auto: update # или 'validate' для продакшена
   datasource:
-    url: jdbc:postgresql://localhost:5432/app.db
+    url: jdbc:postgresql://localhost:5432/app_db
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     hikari:
