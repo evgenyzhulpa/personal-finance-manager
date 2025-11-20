@@ -15,24 +15,56 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 
+/**
+ * Implementation of TransactionService interface.
+ * Provides business logic for transaction management operations including CRUD operations.
+ *
+ * <p>This service handles transaction-related operations such as creating, reading, updating,
+ * and deleting financial transactions.
+ *
+ * @author Personal Finance Manager Team
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
+    
+    /**
+     * Repository for transaction data access operations.
+     */
     private final TransactionRepository repository;
+    
+    /**
+     * Mapper for converting between Transaction entity and DTOs.
+     */
     private final TransactionMapper transactionMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionListResponse findAll() {
         return transactionMapper.transactionListToTransactionListResponse(
                 repository.findAll());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionResponse findById(Long id) {
         Transaction transaction = getTransactionById(id);
         return transactionMapper.transactionToTransactionResponse(transaction);
     }
 
+    /**
+     * Retrieves a transaction entity by ID.
+     *
+     * @param id the unique identifier of the transaction
+     * @return Transaction entity
+     * @throws EntityNotFoundException if transaction with the specified id is not found
+     */
     private Transaction getTransactionById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -40,6 +72,9 @@ public class TransactionServiceImpl implements TransactionService {
                 );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TransactionResponse save(UpsertTransactionRequest request) {
         Transaction newTransaction = transactionMapper.transactionRequestToTransaction(request);
@@ -47,6 +82,9 @@ public class TransactionServiceImpl implements TransactionService {
                 repository.save(newTransaction));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public TransactionResponse update(Long id, UpsertTransactionRequest request) {
@@ -57,6 +95,9 @@ public class TransactionServiceImpl implements TransactionService {
                 repository.save(existedTransaction));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
