@@ -25,7 +25,7 @@ import java.util.List;
  * <p>Uses TransactionMapperDelegate for custom mapping logic, particularly
  * for resolving User entity from userId in request DTOs.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

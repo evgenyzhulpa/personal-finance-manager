@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  *
  * <p>This controller advice provides centralized exception handling across all REST endpoints.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

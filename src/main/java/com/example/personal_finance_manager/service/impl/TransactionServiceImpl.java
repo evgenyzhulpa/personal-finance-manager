@@ -22,7 +22,7 @@ import java.text.MessageFormat;
  * <p>This service handles transaction-related operations such as creating, reading, updating,
  * and deleting financial transactions.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

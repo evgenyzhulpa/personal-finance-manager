@@ -8,7 +8,7 @@ import com.example.personal_finance_manager.dto.response.TransactionResponse;
  * Service interface for transaction management operations.
  * Defines business logic methods for transaction-related operations.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

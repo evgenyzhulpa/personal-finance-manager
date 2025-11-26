@@ -9,7 +9,7 @@ import com.example.personal_finance_manager.dto.response.UserResponse;
  * Service interface for user management operations.
  * Defines business logic methods for user-related operations.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

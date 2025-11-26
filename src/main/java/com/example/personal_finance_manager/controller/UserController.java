@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * <p>All endpoints are available under the base path {@code /api/users}.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

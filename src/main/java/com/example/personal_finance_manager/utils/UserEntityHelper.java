@@ -16,7 +16,7 @@ import java.util.Optional;
  * <p>This helper encapsulates common user retrieval logic and exception handling,
  * preventing code duplication across the application.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

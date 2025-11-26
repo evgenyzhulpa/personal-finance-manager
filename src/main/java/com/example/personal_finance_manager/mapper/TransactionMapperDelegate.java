@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * <p>This delegate is used by MapStruct to implement custom mapping methods
  * that cannot be automatically generated.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

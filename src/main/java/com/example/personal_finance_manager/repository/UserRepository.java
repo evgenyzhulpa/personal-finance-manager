@@ -15,7 +15,7 @@ import java.util.Optional;
  * <p>This repository provides methods for accessing user data from the database,
  * including methods for loading users with their associated transactions.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

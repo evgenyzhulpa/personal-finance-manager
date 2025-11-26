@@ -23,7 +23,7 @@ import java.util.List;
  *   <li>List of User entities and UserListResponse DTO</li>
  * </ul>
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

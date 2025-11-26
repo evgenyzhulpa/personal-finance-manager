@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>This service handles user-related operations such as creating, reading, updating,
  * and deleting users, as well as retrieving users with their associated transactions.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

@@ -1,9 +1,14 @@
 package com.example.personal_finance_manager.service;
 
+import com.example.personal_finance_manager.dto.response.TransactionResponse;
+import com.example.personal_finance_manager.dto.response.UserDetailedResponse;
 import com.example.personal_finance_manager.dto.response.UserListResponse;
 import com.example.personal_finance_manager.dto.response.UserResponse;
 import com.example.personal_finance_manager.exception.EntityNotFoundException;
 import com.example.personal_finance_manager.mapper.UserMapper;
+import com.example.personal_finance_manager.model.Category;
+import com.example.personal_finance_manager.model.Transaction;
+import com.example.personal_finance_manager.model.TransactionType;
 import com.example.personal_finance_manager.model.User;
 import com.example.personal_finance_manager.repository.UserRepository;
 import com.example.personal_finance_manager.service.impl.UserServiceImpl;
@@ -16,7 +21,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +69,7 @@ public class UserServiceImplTest {
         when(entityHelper.getUserById(id, false)).thenReturn(user);
         when(userMapper.userToUserResponse(user)).thenReturn(userResponse);
         
-        assertThat(user.getId()).isEqualTo(userService.findById(id).getId());
+        assertThat(userResponse).isEqualTo(userService.findById(id));
         verify(entityHelper, times(1)).getUserById(id, false);
         verify(userMapper, times(1)).userToUserResponse(user);
     }
@@ -81,6 +88,21 @@ public class UserServiceImplTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(errorMessage);
         verify(entityHelper, times(1)).getUserById(nonExistingUserId, false);
+    }
+
+    @Test
+    @DisplayName("Should return detailed user response when user exists")
+    public void givenExistingUser_whenFindByIdWithTransactions_ThenReturnUserDetailedResponse() {
+        Long id = 1L;
+        User user = createTestUserWithTransactions(id);
+        UserDetailedResponse userDetailedResponse = createTestUserDetailedResponse(user);
+
+        when(entityHelper.getUserById(id, true)).thenReturn(user);
+        when(userMapper.userToUserDetailedResponse(user)).thenReturn(userDetailedResponse);
+
+        assertThat(userService.findByIdWithTransactions(id)).isEqualTo(userDetailedResponse);
+        verify(entityHelper, times(1)).getUserById(id, true);
+        verify(userMapper, times(1)).userToUserDetailedResponse(user);
     }
 
     private User createTestUser(Long id) {
@@ -107,5 +129,51 @@ public class UserServiceImplTest {
         userResponse.setUsername(testUser.getUsername());
         userResponse.setEmail(testUser.getEmail());
         return userResponse;
+    }
+
+    private User createTestUserWithTransactions(Long id) {
+        User user = createTestUser(id);
+        Transaction transaction = createTestTransaction(user);
+        user.setTransactions(List.of(transaction));
+        return user;
+    }
+
+    private Transaction createTestTransaction(User user) {
+        Long id = 1L;
+        return Transaction.builder()
+                .id(id)
+                .user(user)
+                .amount(new BigDecimal(100000))
+                .category(Category.OTHER)
+                .type(TransactionType.INCOME)
+                .date(LocalDateTime.now())
+                .description("This is the test transaction")
+                .build();
+    }
+
+    private UserDetailedResponse createTestUserDetailedResponse(User user) {
+        UserDetailedResponse userDetailedResponse = new UserDetailedResponse();
+        userDetailedResponse.setId(user.getId());
+        userDetailedResponse.setUsername(user.getUsername());
+        userDetailedResponse.setEmail(user.getEmail());
+
+        List<TransactionResponse> transactionResponses = user.getTransactions()
+                .stream()
+                .map(this::createTestTransactionResponse)
+                .toList();
+        userDetailedResponse.setTransactions(transactionResponses);
+
+        return userDetailedResponse;
+    }
+
+    private TransactionResponse createTestTransactionResponse(Transaction transaction) {
+        TransactionResponse transactionResponse = new TransactionResponse();
+        transactionResponse.setId(transaction.getId());
+        transactionResponse.setType(transaction.getType());
+        transactionResponse.setDate(transaction.getDate());
+        transactionResponse.setAmount(transaction.getAmount());
+        transactionResponse.setCategory(transaction.getCategory());
+        transactionResponse.setDescription(transaction.getDescription());
+        return transactionResponse;
     }
 }

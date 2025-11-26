@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * <p>This repository provides methods for accessing transaction data from the database.
  *
- * @author Personal Finance Manager Team
+ * @author Evgeny Zhulpa
  * @version 1.0
  * @since 1.0
  */

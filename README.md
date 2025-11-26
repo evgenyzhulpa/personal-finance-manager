@@ -103,3 +103,5 @@ Common responses include `ErrorResponse { message }` for errors such as `404 Not
 
 For questions or improvements, feel free to open issues or extend the project! 
 
+
+
