@@ -1,4 +1,7 @@
 HELP.md
+PROJECT_DESCRIPTION.md
+MISSING_TESTS_EXAMPLES.md
+TEST_REVIEW.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

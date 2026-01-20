@@ -1,5 +1,6 @@
 package com.example.personal_finance_manager.service;
 
+import com.example.personal_finance_manager.dto.request.UpsertUserRequest;
 import com.example.personal_finance_manager.dto.response.TransactionResponse;
 import com.example.personal_finance_manager.dto.response.UserDetailedResponse;
 import com.example.personal_finance_manager.dto.response.UserListResponse;
@@ -12,25 +13,24 @@ import com.example.personal_finance_manager.model.TransactionType;
 import com.example.personal_finance_manager.model.User;
 import com.example.personal_finance_manager.repository.UserRepository;
 import com.example.personal_finance_manager.service.impl.UserServiceImpl;
+import com.example.personal_finance_manager.utils.BeanUtils;
 import com.example.personal_finance_manager.utils.UserEntityHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,8 +47,10 @@ public class UserServiceImplTest {
     @Test
     @DisplayName("Should return all users")
     public void givenExistingUsers_whenFindAll_thenReturnUserListResponse() {
-        Long id = 1L;
-        List<User> users = List.of(createTestUser(id));
+        List<User> users = List.of(
+                createTestUser(1L),
+                createTestUser(2L),
+                createTestUser(3L));
         UserListResponse userListResponse = createTestUserListResponse(users);
 
         when(repository.findAll()).thenReturn(users);
@@ -92,7 +94,7 @@ public class UserServiceImplTest {
 
     @Test
     @DisplayName("Should return detailed user response when user exists")
-    public void givenExistingUser_whenFindByIdWithTransactions_ThenReturnUserDetailedResponse() {
+    public void givenExistingUser_whenFindByIdWithTransactions_thenReturnUserDetailedResponse() {
         Long id = 1L;
         User user = createTestUserWithTransactions(id);
         UserDetailedResponse userDetailedResponse = createTestUserDetailedResponse(user);
@@ -103,6 +105,48 @@ public class UserServiceImplTest {
         assertThat(userService.findByIdWithTransactions(id)).isEqualTo(userDetailedResponse);
         verify(entityHelper, times(1)).getUserById(id, true);
         verify(userMapper, times(1)).userToUserDetailedResponse(user);
+    }
+    
+    @Test
+    @DisplayName("Should throw exception when user with transactions is not found")
+    public void givenNonExistingUserId_whenFindByIdWithTransactions_thenThrowException() {
+        Long nonExistingUserId = 999L;
+        String message = MessageFormat.format("User with id {0} is not found!", nonExistingUserId);
+
+        when(entityHelper.getUserById(nonExistingUserId, true))
+                .thenThrow(new EntityNotFoundException(message));
+
+        assertThatThrownBy(() -> userService.findByIdWithTransactions(nonExistingUserId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(message);
+
+        verify(entityHelper, times(1)).getUserById(nonExistingUserId, true);
+        
+    }
+
+    @Test
+    @DisplayName("Should return user response when user saved")
+    public void givenNewUser_whenSave_thenReturnUserResponse() {
+        Long id = 1L;
+        User user = createTestUserWithTransactions(id);
+        UpsertUserRequest userRequest = createTestUpsertUserRequest(user);
+        UserResponse userResponse = createTestUserResponse(user);
+
+        when(userMapper.userRequestToUser(userRequest)).thenReturn(user);
+        when(repository.save(user)).thenReturn(user);
+        when(userMapper.userToUserResponse(user)).thenReturn(userResponse);
+
+        assertThat(userService.save(userRequest)).isEqualTo(userResponse);
+        verify(userMapper, times(1)).userRequestToUser(userRequest);
+        verify(repository, times(1)).save(user);
+        verify(userMapper, times(1)).userToUserResponse(user);
+    }
+
+    @Test
+    @DisplayName("Should return user response when user updated")
+    public void givenExistingUser_whenUpdate_thenReturnUserResponse() {
+
+
     }
 
     private User createTestUser(Long id) {
@@ -175,5 +219,13 @@ public class UserServiceImplTest {
         transactionResponse.setCategory(transaction.getCategory());
         transactionResponse.setDescription(transaction.getDescription());
         return transactionResponse;
+    }
+
+    private UpsertUserRequest createTestUpsertUserRequest(User user) {
+        UpsertUserRequest userRequest = new UpsertUserRequest();
+        userRequest.setUsername(user.getUsername());
+        userRequest.setEmail(user.getEmail());
+        userRequest.setPassword(user.getPassword());
+        return userRequest;
     }
 }
